@@ -45,38 +45,13 @@ at = logreturn - mean(logreturn)
 acf(at^2)
 for (k in 1:12) print(Box.test(at^2,lag = k, type = "Ljung-Box"))
 
+#eGARCH(5,7)
 library(rugarch)
-#GARCH(1,1)
-spec1=ugarchspec(variance.model=list(model="sGARCH", garchOrder = c(1,4)),
-                  mean.model=list(armaOrder=c(0,0),include.mean = TRUE),
-                  distribution.model="norm")
-m1=ugarchfit(spec=spec1,data=logreturn)
-#Calculate AIC score
-l1 = likelihood(m1)
-(-2*l1)/length(logreturn)+2*(length(m1@fit$coef))/length(logreturn)
-
-#GARCH-M(1,1)
-spec2 = ugarchspec(variance.model=list(model="sGARCH", garchOrder=c(1,1)),
-                   mean.model=list(armaOrder=c(0,0),include.mean=TRUE,archm=TRUE,archpow=2),
-                   distribution.model="norm")
-m2 = ugarchfit(spec = spec2, data = logreturn)
-#Calculate AIC score
-l2 = likelihood(m2)
-(-2*l2)/length(logreturn)+2*(length(m2@fit$coef))/length(logreturn)
-
-#iGARCH(1,1)
-spec3=ugarchspec(variance.model=list(model="iGARCH", garchOrder = c(1,4)),
-                  mean.model=list(armaOrder=c(0,0),include.mean = TRUE),
-                  distribution.model="norm")
-m3=ugarchfit(spec=spec3,data=logreturn)
-l3 = likelihood(m3)
-(-2*l3)/length(logreturn)+2*(length(m3@fit$coef))/length(logreturn)
-
-#eGARCH(1,1)
 spec4=ugarchspec(variance.model=list(model="eGARCH", garchOrder = c(5,7)),
                  mean.model=list(armaOrder=c(0,0),include.mean = TRUE),
                  distribution.model="norm")
 m4=ugarchfit(spec=spec4,data=logreturn)
+m4
 l4 = likelihood(m4)
 (-2*l4)/length(logreturn)+2*(length(m4@fit$coef))/length(logreturn)
 
@@ -117,6 +92,7 @@ lines(8:107, U,type="l",col="blue")
 lines(8:107, L,type="l",col="blue")
 
 
+##########################Select model#####################
 
 best_aic = 1000
 model = m1
@@ -170,3 +146,32 @@ for (k in 1:7) {
     
   }
 }
+
+
+
+library(rugarch)
+#GARCH(1,1)
+spec1=ugarchspec(variance.model=list(model="sGARCH", garchOrder = c(1,4)),
+                 mean.model=list(armaOrder=c(0,0),include.mean = TRUE),
+                 distribution.model="norm")
+m1=ugarchfit(spec=spec1,data=logreturn)
+#Calculate AIC score
+l1 = likelihood(m1)
+(-2*l1)/length(logreturn)+2*(length(m1@fit$coef))/length(logreturn)
+
+#GARCH-M(1,1)
+spec2 = ugarchspec(variance.model=list(model="sGARCH", garchOrder=c(1,1)),
+                   mean.model=list(armaOrder=c(0,0),include.mean=TRUE,archm=TRUE,archpow=2),
+                   distribution.model="norm")
+m2 = ugarchfit(spec = spec2, data = logreturn)
+#Calculate AIC score
+l2 = likelihood(m2)
+(-2*l2)/length(logreturn)+2*(length(m2@fit$coef))/length(logreturn)
+
+#iGARCH(1,1)
+spec3=ugarchspec(variance.model=list(model="iGARCH", garchOrder = c(1,4)),
+                 mean.model=list(armaOrder=c(0,0),include.mean = TRUE),
+                 distribution.model="norm")
+m3=ugarchfit(spec=spec3,data=logreturn)
+l3 = likelihood(m3)
+(-2*l3)/length(logreturn)+2*(length(m3@fit$coef))/length(logreturn)
